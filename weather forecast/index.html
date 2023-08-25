@@ -1,0 +1,85 @@
+<html>
+  <head>
+    <title>weather</title>
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <link rel="stylesheet" type="text/CSS" href="index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  </head>
+  <body>
+    <section>
+      
+    <div class="weather-box">
+      <div class="search">
+        <input type="text" placeholder="Enter Location" id='loc' name="search_loc" value="">
+        <button type="submit" onClick="getDetails()"><i class="fa fa-search"></i></button>
+      </div>
+    <div class="location-dis">
+      <h1 id="place"></h1>
+      <p id="time"></p>
+    </div>
+      <div class="temp">
+        <h2 id="temp"></h2>
+      </div>  
+    
+    <div class="forecast">
+      <h1>Weather Today</h1>
+      <div class="forecast-details">
+        <div><img id="png1"/><p>6:00 AM</p><h3 id="t1"></h3></div>
+        <div><img id="png2"/><p>11:00 AM</p><h3 id="t2"></h3></div>
+        <div><img id="png3"/><p>4:00 PM</p><h3 id="t3"></h3></div>
+        <div><img id="png4"/><p>9:00 PM</p><h3 id="t4"></h3></div>
+      </div>
+    </div>
+    </div>
+</section>
+  </body>
+
+  <script>
+    function getDetails() {
+      var request=new XMLHttpRequest();
+      //getting location
+    var loc=/*'nandyal'*/document.getElementById('loc').value;
+   
+    request.open('GET','http://api.weatherapi.com/v1/forecast.json?key=c7b48e84d8a24c9482a94017232506&q='+loc+'&aqi=yes',true);
+    //request fucntion
+    request.onload=function() {
+      var data=JSON.parse(this.response);
+      //getting img id's
+      var img1=document.getElementById("png1");
+      var img2=document.getElementById("png2");
+      var img3=document.getElementById("png3");
+      var img4=document.getElementById("png4");
+      
+      var t1=document.getElementById("t1");
+      var t2=document.getElementById("t2");
+      var t3=document.getElementById("t3");
+      var t4=document.getElementById("t4");
+      //setting img attributes
+      img1.setAttribute("src",data['forecast']['forecastday'][0]['hour'][6]['condition']['icon']);
+      img2.setAttribute("src",data['forecast']['forecastday'][0]['hour'][11]['condition']['icon']);
+      img3.setAttribute("src",data['forecast']['forecastday'][0]['hour'][16]['condition']['icon']);
+      img4.setAttribute("src",data['forecast']['forecastday'][0]['hour'][21]['condition']['icon']);
+
+      t1.innerHTML=~~data['forecast']['forecastday'][0]['hour'][6]['temp_c']+'<sup>o</sup>';
+      t2.innerHTML=~~data['forecast']['forecastday'][0]['hour'][11]['temp_c']+'<sup>o</sup>';
+      t3.innerHTML=~~data['forecast']['forecastday'][0]['hour'][16]['temp_c']+'<sup>o</sup>';
+      t4.innerHTML=~~data['forecast']['forecastday'][0]['hour'][21]['temp_c']+'<sup>o</sup>';
+     //locatiom
+      var ele =document.getElementById("place");
+      ele.innerHTML=data['location']['name'];
+      var tim=document.getElementById('time');
+      let tim_data=data['location']['localtime'].split(" ");
+      tim.innerHTML=tim_data[0]+'<br><br>'+tim_data[1];
+      //temperature
+      var temp=document.getElementById('temp');
+      temp.innerHTML=~~data['current']['temp_c']+'<sup>o</sup>';
+      
+      console.log(data);
+      console.log(data['forecast']['forecastday'][0]);
+      console.log(data['forecast']['forecastday'][0]['hour'][6]['condition']['icon'])
+    }
+    request.send();
+    }
+   
+  </script>
+</html>
